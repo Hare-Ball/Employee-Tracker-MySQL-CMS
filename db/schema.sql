@@ -3,29 +3,30 @@ CREATE DATABASE employeeTracker_db;
 
 USE employeeTracker_db;
 
-CREATE TABLE department (
-    id AUTO_INCREMENT PRIMARY KEY,
+CREATE TABLE departments (
+    id INT PRIMARY KEY AUTO_INCREMENT,
     name VARCHAR(30)
 );
 
-CREATE TABLE role (
-    id AUTO_INCREMENT PRIMARY KEY,
+CREATE TABLE roles (
+    id INT PRIMARY KEY AUTO_INCREMENT,
     title VARCHAR(30),
-    salary DECIMAL(12,6),
+    salary DECIMAL(50,2),
     department_id INT,
     FOREIGN KEY (department_id)
-    REFERENCES department(id)
+    REFERENCES departments(id)
     ON DELETE SET NULL
 );
 
-CREATE TABLE employee (
-    id AUTO_INCREMENT PRIMARY KEY,
+CREATE TABLE employees (
+    id INT PRIMARY KEY AUTO_INCREMENT,
     first_name VARCHAR(30),
     last_name VARCHAR(30),
     role_id INT,
     manager_id INT,
     FOREIGN KEY (role_id)
-    REFERENCES role(id)
--- manager id?
+    REFERENCES roles(id),
+    FOREIGN KEY (manager_id)
+    REFERENCES employees(id)
     ON DELETE SET NULL
-)
+);
