@@ -146,7 +146,7 @@ function addRoles() {
   ])
   .then(results=> {
     //When adding department_id, returns a null value?
-      connection.query("INSERT INTO roles SET ?", {title:results.roleTitle, salary:results.roleSalary, department_id:results.departments}, function (err, results) {
+      connection.query("INSERT INTO roles SET ?", {title:results.roleTitle, salary:results.roleSalary, department_id:results.choice}, function (err, results) {
       if (err) throw err;
       console.table(results);
       console.log("Role added to the database!");
@@ -197,7 +197,7 @@ function addEmployees() {
   ])
   .then(results=> {
      //When adding manager_id, returns a null value?
-      connection.query("INSERT INTO employees SET ?", {first_name: results.firstName, last_name: results.lastName, role_id:results.roles, manager_id:results.managers}, function (err, results) {
+      connection.query("INSERT INTO employees SET ?", {first_name: results.firstName, last_name: results.lastName, role_id:results.role, manager_id:results.manager}, function (err, results) {
       if (err) throw err;
       console.table(results);
       console.log("Employee added to the database!");
