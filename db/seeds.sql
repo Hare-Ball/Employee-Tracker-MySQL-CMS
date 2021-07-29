@@ -4,7 +4,7 @@ INSERT INTO departments (name)
 VALUES ("City Manager's Office"),
        ("Parks Department"),
        ("Public Health"),
-       ("Service Staff");
+       ("Service Staff"),
        ("City Planning");
 
 INSERT INTO roles (title, salary, department_id)
@@ -30,9 +30,9 @@ VALUES ("Chris", "Traeger", 1, null),
        ("Jerry", "Gergich", 5, 3),
        ("Donna", "Meagle", 6, 3),
        ("Ron", "Swanson", 7, null),
-       ("April", "Ludgate", 8, 5),
-       ("Ann", "Perkins", 10, null),
-       ("Andy", "Dwyer", 9, null),
+       ("April", "Ludgate", 8, 7),
+       ("Ann", "Perkins", 9, null),
+       ("Andy", "Dwyer", 10, null),
        ("Mark", "Brendanawicz", 11, null);
 
 

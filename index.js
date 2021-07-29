@@ -18,10 +18,12 @@ const connection = mysql.createConnection({
 connection.connect((err) => {
   if (err) throw err;
   console.log("You are now connected!");
+  console.log("\n");
   startMenu();
 });
 
 //Ascii Art Attempt
+
 
 console.log(logo({ 
   name: "Employee Tracker!",
@@ -175,15 +177,15 @@ function addRoles() {
 //Add Employees
 
 function addEmployees() {
-  connection.query("SELECT id, title, department_id FROM roles",function (err, data) {
+  connection.query("SELECT id, title FROM roles",function (err, data) {
     if (err) throw err;
   let roles = data.map(item => {
-    return {value:item.id, name:item.title, value:item.department_id}
+    return {value:item.id, name:item.title}
   })
-  connection.query("SELECT first_name, last_name, manager_id FROM employees",function (err, data) {
+  connection.query("SELECT id, first_name, last_name, manager_id FROM employees",function (err, data) {
     if (err) throw err;
   let managers = data.map(item => {
-    return {name:item.first_name, name:item.last_name, value:item.manager_id}
+    return {value:item.id, name:item.first_name, name:item.last_name}
   })
   console.log(managers);
   inquirer
