@@ -4,6 +4,7 @@ const inquirer = require("inquirer");
 const mysql = require("mysql2");
 const cTable = require("console.table");
 require("dotenv").config();
+const logo = require('asciiart-logo');
 
 //Connection
 
@@ -19,6 +20,19 @@ connection.connect((err) => {
   console.log("You are now connected!");
   startMenu();
 });
+
+//Ascii Art Attempt
+
+console.log(logo({ 
+  name: "Employee Tracker!",
+  font:"Slant",
+  logoColor: "bold-cyan",
+  textColor: "yellow"
+  })
+  .emptyLine()
+  .center("Welcome! Please select an option using the arrow keys to view or modify database tables")
+  .render()
+);
 
 //Start Function
 
@@ -146,6 +160,7 @@ function addRoles() {
   ])
   .then(results=> {
     //When adding department_id, returns a null value?
+    console.log(results)
       connection.query("INSERT INTO roles SET ?", {title:results.roleTitle, salary:results.roleSalary, department_id:results.choice}, function (err, results) {
       if (err) throw err;
       console.table(results);
@@ -160,16 +175,17 @@ function addRoles() {
 //Add Employees
 
 function addEmployees() {
-  connection.query("SELECT id, title FROM roles",function (err, data) {
+  connection.query("SELECT id, title, department_id FROM roles",function (err, data) {
     if (err) throw err;
   let roles = data.map(item => {
-    return {value:item.id, name:item.title }
+    return {value:item.id, name:item.title, value:item.department_id}
   })
-  connection.query("SELECT first_name, last_name FROM employees",function (err, data) {
+  connection.query("SELECT first_name, last_name, manager_id FROM employees",function (err, data) {
     if (err) throw err;
   let managers = data.map(item => {
-    return {name:item.first_name, name:item.last_name, value:item.id}
+    return {name:item.first_name, name:item.last_name, value:item.manager_id}
   })
+  console.log(managers);
   inquirer
   .prompt([
     {
@@ -188,6 +204,11 @@ function addEmployees() {
       name: "role",
       choices: roles,
     },
+    // {
+    //   type: "confirm",
+    //   message: "Does this employee have a manager?",
+    //   name: "confirm",
+    // },
     {
       type: "list",
       message: "Choose a manager for the new employee.",
@@ -196,13 +217,14 @@ function addEmployees() {
     },
   ])
   .then(results=> {
+    console.log(results);
      //When adding manager_id, returns a null value?
       connection.query("INSERT INTO employees SET ?", {first_name: results.firstName, last_name: results.lastName, role_id:results.role, manager_id:results.manager}, function (err, results) {
       if (err) throw err;
       console.table(results);
       console.log("Employee added to the database!");
       console.log("-------------------------\n");
-      viewRoles();
+      viewEmployees();
       });
 })
 })
