@@ -237,17 +237,12 @@ function addEmployees() {
 })
 };
 
-  // data.map(item => {
-  // return {value:item.id, name:item.title}
-
 //Update Employees
 
 function updateEmployees() {
-  connection.query("SELECT * FROM employees", function (err, data) {
+  connection.query("SELECT * from employees", function (err, data) {
     if (err) throw err;
-    let employeeChoice = data.map(item=> {
-      return {name:item.last_name}
-    })
+    let employeeChoice = data.map(item=> item.last_name)
   connection.query("SELECT * FROM roles", function (err, data){
     if (err) throw err;
     let roleChoice= data.map(item=> item.title)
