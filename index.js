@@ -13,14 +13,16 @@ const connection = mysql.createConnection({
   user: "root",
   database: "employeeTracker_db",
   password: process.env.DB_PASSWORD,
-});
+}
+);
 
 connection.connect((err) => {
   if (err) throw err;
   console.log("You are now connected!");
   console.log("\n");
   startMenu();
-});
+}
+);
 
 //Ascii Art Attempt
 
@@ -45,7 +47,7 @@ function startMenu() {
         type: "list",
         message: "Choose One",
         name: "choice",
-        choices: ["View Departments", "Add Departments", "View Roles","Add Roles", "View Employees","Add Employees", "Exit"],
+        choices: ["View Departments", "Add Departments", "View Roles","Add Roles", "View Employees","Add Employees","Update Employees", "Exit"],
       },
     ])
 //Bonus [update employee managers, view employees by manager, view employees by department, delete departments, roles, and employees, view budget of a department]
@@ -72,13 +74,16 @@ function startMenu() {
         case "Add Employees":
           addEmployees();
           break;
+        case "Update Employees":
+          updateEmployees() ;
+          break;
 
         default:
           console.log("Goodbye");
           connection.end();
       }
     });
-}
+};
 
 //View Departments
 
@@ -88,7 +93,7 @@ function viewDepartments() {
     console.table(results);
     startMenu();
   });
-}
+};
 
 //View Roles
 
@@ -98,17 +103,17 @@ function viewRoles() {
     console.table(results);
     startMenu();
   });
-}
+};
 
 //View Employees
 
 function viewEmployees() {
-  connection.query("SELECT * FROM employees", function (err, results) {
+  connection.query("SELECT employees.id, employees.first_name, employees.last_name, roles.title, roles.salary, departments.name AS departments, CONCAT(manager.first_name, ' ', manager.last_name) as Manager FROM employees LEFT JOIN roles on employees.role_id = roles.id LEFT JOIN departments ON roles.department_id= departments.id LEFT JOIN employees manager on manager.id = employees.manager_id;", function (err, results) {
     if (err) throw err;
     console.table(results);
     startMenu();
   });
-}
+};
 
 //Add Departments
 
@@ -187,7 +192,6 @@ function addEmployees() {
   let managers = data.map(item => {
     return {value:item.id, name:item.first_name, name:item.last_name}
   })
-  console.log(managers);
   inquirer
   .prompt([
     {
@@ -233,3 +237,44 @@ function addEmployees() {
 })
 };
 
+//Update Employees
+
+function updateEmployees() {
+  connection.query("SELECT id, first_name, last_name FROM employees", function (err, data) {
+    if (err) throw err;
+  let employeeChoice = data.map(item => {
+    return {value:item.id, name:item.first_name, name:item.last_name, value:item.role_id, value:item.manager_id}  
+   })
+  connection.query("SELECT id, title, department_id FROM roles", function (err, data) {
+    if (err) throw err;
+  let roleChoice = data.map(item => {
+    return {value:item.id, name:item.title, value:item.department_id}  
+  })
+  inquirer
+  .prompt ([
+    {
+      type: "list",
+      name: "employeeName",
+      message: "Choose an employee to update",
+      choices: employeeChoice,
+    },
+    {
+      type: "list",
+      name: "role",
+      message: "Choose a role for the employee ",
+      choices: roleChoice,
+    },
+  ])
+  .then(results => {
+    console.log(results);
+    connection.query("UPDATE employees SET ? WHERE ?", [{role_id: results.role},{last_name: results.employeeName}], function (err, results) {
+    if (err) throw err;
+      console.table(results);
+      console.log("Employee role has been updated!");
+      console.log("-------------------------\n");
+      viewEmployees();
+      });
+  })
+  })
+  })
+};
