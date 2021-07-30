@@ -127,7 +127,7 @@ function addDepartments() {
       },
     ])
     .then(results=> {
-        let {department} = results;
+        const {department} = results;
         connection.query("INSERT INTO departments SET ?", {name: department}, function (err, results) {
         if (err) throw err;
         console.table(results);
@@ -143,7 +143,7 @@ function addDepartments() {
 function addRoles() {
   connection.query("SELECT id, name FROM departments",function (err, data) {
     if (err) throw err;
-  let departments = data.map(item => {
+  const departments = data.map(item => {
     return {value:item.id, name:item.name}
   })
   inquirer
@@ -184,12 +184,12 @@ function addRoles() {
 function addEmployees() {
   connection.query("SELECT id, title FROM roles",function (err, data) {
     if (err) throw err;
-  let roles = data.map(item => {
+  const roles = data.map(item => {
     return {value:item.id, name:item.title}
   })
   connection.query("SELECT id, first_name, last_name, manager_id FROM employees",function (err, data) {
     if (err) throw err;
-  let managers = data.map(item => {
+  const managers = data.map(item => {
     return {value:item.id, name:item.first_name, name:item.last_name}
   })
   inquirer
@@ -245,12 +245,12 @@ function addEmployees() {
 function updateEmployees() {
   connection.query("SELECT * FROM employees", function (err, data) {
     if (err) throw err;
-    let employeeChoice = data.map(item=> {
+    const employeeChoice = data.map(item=> {
       return {name:item.last_name}
     })
   connection.query("SELECT * FROM roles", function (err, data){
     if (err) throw err;
-    let roleChoice= data.map(item=> item.title)
+    const roleChoice= data.map(item=> item.title)
   // connection.query("SELECT id, first_name, last_name FROM employees", function (err, data) {
   //   if (err) throw err;
   // let employeeChoice = data.map(item => {
