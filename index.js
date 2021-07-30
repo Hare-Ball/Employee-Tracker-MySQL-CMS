@@ -240,16 +240,22 @@ function addEmployees() {
 //Update Employees
 
 function updateEmployees() {
-  connection.query("SELECT id, first_name, last_name FROM employees", function (err, data) {
+  connection.query("SELECT * from employees", function (err, data) {
     if (err) throw err;
-  let employeeChoice = data.map(item => {
-    return {value:item.id, name:item.first_name, name:item.last_name, value:item.role_id, value:item.manager_id}  
-   })
-  connection.query("SELECT id, title, department_id FROM roles", function (err, data) {
+    let employeeChoice = data.map(item=> item.last_name)
+  connection.query("SELECT * FROM roles", function (err, data){
     if (err) throw err;
-  let roleChoice = data.map(item => {
-    return {value:item.id, name:item.title, value:item.department_id}  
-  })
+    let roleChoice= data.map(item=> item.title)
+  // connection.query("SELECT id, first_name, last_name FROM employees", function (err, data) {
+  //   if (err) throw err;
+  // let employeeChoice = data.map(item => {
+  //   return {value:item.id, name:item.first_name, name:item.last_name, value:item.role_id, value:item.manager_id}  
+  //  })
+  // connection.query("SELECT id, title, department_id FROM roles", function (err, data) {
+  //   if (err) throw err;
+  // let roleChoice = data.map(item => {
+  //   return {value:item.id, name:item.title, value:item.department_id}  
+  // })
   inquirer
   .prompt ([
     {
@@ -267,7 +273,8 @@ function updateEmployees() {
   ])
   .then(results => {
     console.log(results);
-    connection.query("UPDATE employees SET ? WHERE ?", [{role_id: results.role},{last_name: results.employeeName}], function (err, results) {
+    //Had to go and learn MySQL UPDATE JOIN syntax basically had to force the foreign and primary key functionality in an UPDATE 
+    connection.query("UPDATE employees INNER JOIN roles ON employees.role_id = roles.id SET ? WHERE ?", [{title: results.role},{last_name: results.employeeName}], function (err, results) {
     if (err) throw err;
       console.table(results);
       console.log("Employee role has been updated!");
@@ -275,6 +282,6 @@ function updateEmployees() {
       viewEmployees();
       });
   })
-  })
-  })
-};
+  }
+  )}
+  )};
